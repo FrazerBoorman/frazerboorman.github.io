@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job Report Generator</title>
+  <meta name="color-scheme" content="light dark" />
+  <!-- Your OAuth client ID -->
+  <meta name="google-oauth-client-id"
+        content="105230737516-l8tlnck4idde83pjetrotobpt8borvts.apps.googleusercontent.com" />
+  <style>
+    :root {
+      --bg:#0f172a; --card:#020617; --panel:#020617; --border:#1e293b;
+      --text:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8; --accent-soft:rgba(56,189,248,0.12);
+      --danger:#ef4444;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg:#f8fafc; --card:#ffffff; --panel:#ffffff; --border:#e5e7eb;
+        --text:#020617; --muted:#475569; --accent:#0ea5e9; --accent-soft:rgba(14,165,233,0.10);
+        --danger:#b91c1c;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(900px 600px at 5% 0%, rgba(56,189,248,0.10), transparent 55%),
+        radial-gradient(800px 600px at 95% 0%, rgba(129,140,248,0.12), transparent 50%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px 18px 20px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.40);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      letter-spacing: .02em;
+    }
+    h2 {
+      margin: 18px 0 10px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .muted { color: var(--muted); font-size: 14px; }
+    .pill {
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:11px;padding:3px 9px;border-radius:999px;
+      border:1px solid var(--border);color:var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display:block;
+    }
+    input, select, textarea {
+      width: 100%;
+      font-size: 14px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      resize: vertical;
+    }
+    textarea { min-height: 60px; }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+
+    .btn-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    button {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 13px;
+      font-size: 14px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background: var(--panel);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .06s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    }
+    button.primary {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, var(--accent-soft), transparent);
+    }
+    button.danger { border-color: var(--danger); color: var(--danger); }
+    button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(15,23,42,0.5); }
+
+    .section {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.6);
+      border: 1px dashed var(--border);
+    }
+    @media (prefers-color-scheme: light) {
+      .section { background: #f9fafb; }
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+
+    details.contacts { margin-top:6px; }
+    details.contacts summary {
+      cursor:pointer;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .small-note { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    #reportPreview {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 12px;
+      background: var(--panel);
+      max-height: 420px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    #reportPreview h3 { margin: 6px 0 2px; font-size: 14px; }
+    #reportPreview p { margin: 2px 0 6px; }
+    #reportPreview ul { margin: 2px 0 6px 18px; padding:0; }
+
+    .file-list { font-size: 12px; color: var(--muted); margin-top:4px; }
+
+    .warning { color: var(--danger); font-size: 12px; margin-top: 4px; }
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+        <div>
+          <h1>Job Report Generator</h1>
+          <div class="muted">Pull a job from Google Calendar, fill out findings, then generate a report for the office.</div>
+        </div>
+        <span class="pill">Frazer · AVD Tools</span>
+      </div>
+
+      <!-- Calendar selection -->
+      <div class="section" id="calendarSection">
+        <div class="section-title">Step 1 – Select job from calendar</div>
+        <div class="grid">
+          <div>
+            <label for="calendarId">Calendar ID</label>
+            <input id="calendarId"
+              value="bb14db72acb2ffd4230316960d02103fa66e54901522ff7b8113eec682f6d42e@group.calendar.google.com" />
+            <div class="small-note">Use your job calendar ID or primary email calendar.</div>
+          </div>
+          <div>
+            <label for="fromDate">From date</label>
+            <input id="fromDate" type="date" />
+          </div>
+          <div>
+            <label for="toDate">To date</label>
+            <input id="toDate" type="date" />
+          </div>
+          <div style="align-self:end;">
+            <div class="btn-row">
+              <button id="signinBtn" class="primary" type="button">Sign in to Google</button>
+              <button id="loadEventsBtn" type="button">Load events</button>
+            </div>
+            <div id="authStatus" class="small-note">Status: Not signed in</div>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px;">
+          <div>
+            <label for="eventSelect">Events</label>
+            <select id="eventSelect">
+              <option value="">— Select event —</option>
+            </select>
+          </div>
+          <div style="align-self:end;">
+            <button id="useEventBtn" type="button">Pull from selected event</button>
+            <div class="small-note">Reads title, description, location & date into the form below.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report fields -->
+      <div class="section">
+        <div class="section-title">Step 2 – Job details</div>
+        <div class="grid">
+          <div>
+            <label for="employee">Employee</label>
+            <input id="employee" placeholder="Will try to derive from calendar email (e.g. firstname.lastname@...)" />
+          </div>
+          <div>
+            <label for="jobType">Job type</label>
+            <select id="jobType">
+              <option value="">— Select job type —</option>
+              <option value="TCO">TCO (Technical Call Out)</option>
+              <option value="RTF">RTF (Return To Fix)</option>
+              <option value="Meeting / Consultation">Meeting / Consultation</option>
+              <option value="Recce">Recce</option>
+              <option value="Job / Installation">Job / Installation</option>
+            </select>
+            <div class="small-note">Will auto-detect from title/description if it can; otherwise you choose.</div>
+          </div>
+          <div>
+            <label for="jobDate">Job date</label>
+            <input id="jobDate" type="date" />
+          </div>
+          <div>
+            <label for="jobAddress">Address / site</label>
+            <input id="jobAddress" placeholder="From location field or description where possible" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="jobDescription">Job description</label>
+          <textarea id="jobDescription"
+            placeholder="Summary of what you were supposed to do. Will be pre-filled from the event description if possible."></textarea>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="techCheck">Tech check summary</label>
+          <textarea id="techCheck"
+            placeholder="If description includes TECH CHECK or similar, those notes will be pulled in here for you to tidy."></textarea>
+          <div id="techLinks" class="small-note"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Step 3 – People & time on site</div>
+        <div class="grid">
+          <div>
+            <label for="personsMet">Person(s) met</label>
+            <input id="personsMet" placeholder="Name(s) of contact(s) on site" />
+          </div>
+        </div>
+
+        <details class="contacts">
+          <summary>Contact details (optional)</summary>
+          <div class="grid" style="margin-top:6px;">
+            <div>
+              <label for="contactPhone">Phone</label>
+              <input id="contactPhone" />
+            </div>
+            <div>
+              <label for="contactEmail">Email</label>
+              <input id="contactEmail" />
+            </div>
+            <div>
+              <label for="contactAddress">Postal address (if office need to post something)</label>
+              <textarea id="contactAddress"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <div id="timeOnSiteBlock" style="margin-top:10px; display:none;">
+          <label>Time on site (for TCO/RTF)</label>
+          <div class="row">
+            <div style="flex:1 1 160px;">
+              <label for="timeArrived" style="font-weight:500;font-size:12px;">Arrived</label>
+              <input id="timeArrived" type="time" />
+            </div>
+            <div style="flex:1 1 160px;">
+              <label for="timeLeft" style="font-weight:500;font-size:12px;">Left</label>
+              <input id="timeLeft" type="time" />
+            </div>
+            <div style="flex:1 1 200px;">
+              <label style="font-weight:500;font-size:12px;">Duration</label>
+              <input id="timeDuration" readonly />
+            </div>
+          </div>
+          <div class="small-note">If the job is Job / Installation, you can ignore this.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Step 4 – Findings & advisories</div>
+        <div class="grid">
+          <div>
+            <label for="findings">Findings</label>
+            <textarea id="findings"
+              placeholder="Short, brief sentences describing what you found."></textarea>
+          </div>
+          <div>
+            <label for="howLeft">How things have been left</label>
+            <textarea id="howLeft"
+              placeholder="Short bullet-style notes. These get turned into a paragraph in the report."></textarea>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <label for="advisories">Advisories</label>
+          <textarea id="advisories"
+            placeholder="More short notes (e.g. future improvements, risks). Also turned into proper sentences in the report."></textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Step 5 – Photos / videos</div>
+        <div>
+          <label for="mediaFiles">Upload photos / videos</label>
+          <input id="mediaFiles" type="file" accept="image/*,video/*" multiple />
+          <div class="small-note">Files are only kept locally in your browser. They can’t be emailed automatically from here, but they’ll be listed in the report so you know what to attach.</div>
+          <div id="mediaList" class="file-list"></div>
+        </div>
+      </div>
+
+      <!-- Actions & preview -->
+      <div class="section">
+        <div class="section-title">Step 6 – Generate, check & send</div>
+        <div class="btn-row">
+          <button id="generateBtn" class="primary" type="button">Generate report</button>
+          <button id="viewBtn" type="button">View report</button>
+          <button id="copyBtn" type="button">Copy report text</button>
+          <button id="sendBtn" type="button">Send (opens email)</button>
+        </div>
+        <div class="small-note">Send opens your email client with the report text prefilled to Neil, Mark & David. Attach photos/videos manually.</div>
+
+        <div style="margin-top:10px;">
+          <label>Report preview</label>
+          <div id="reportPreview">No report generated yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Google Calendar auth & events ---
+    const CLIENT_ID = "105230737516-l8tlnck4idde83pjetrotobpt8borvts.apps.googleusercontent.com";
+    const SCOPES   = "https://www.googleapis.com/auth/calendar.readonly";
+    let accessToken = null;
+    let tokenClient = null;
+    let currentEvents = [];   // cached events for the selected date range
+    let lastReportText = "";  // plain text version for email / copy
+
+    function setStatus(msg, ok) {
+      const el = document.getElementById("authStatus");
+      el.textContent = "Status: " + msg;
+      el.className = "small-note " + (ok ? "ok" : "warn");
+    }
+
+    function initAuth() {
+      if (!window.google || !google.accounts || !google.accounts.oauth2) return;
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        prompt: "",
+        callback: (resp) => {
+          if (resp && resp.access_token) {
+            accessToken = resp.access_token;
+            setStatus("Signed in", true);
+          } else {
+            setStatus("Sign-in failed", false);
+          }
+        }
+      });
+    }
+
+    function signIn() {
+      if (!tokenClient) initAuth();
+      if (!tokenClient) { setStatus("Google auth not ready yet.", false); return; }
+      tokenClient.requestAccessToken();
+    }
+
+    function isoRangeForDate(dateStr) {
+      const [y,m,d] = dateStr.split("-").map(Number);
+      const start = new Date(Date.UTC(y, m-1, d, 0,0,0));
+      const end   = new Date(Date.UTC(y, m-1, d, 23,59,59));
+      return { timeMin: start.toISOString(), timeMax: end.toISOString() };
+    }
+    function isoSpan(fromStr, toStr) {
+      const { timeMin } = isoRangeForDate(fromStr);
+      const { timeMax } = isoRangeForDate(toStr);
+      return { timeMin, timeMax };
+    }
+
+    async function loadEvents() {
+      if (!accessToken) { setStatus("Sign in first", false); return; }
+      const calId = (document.getElementById("calendarId").value || "primary").trim();
+      const fromStr = document.getElementById("fromDate").value;
+      const toStr   = document.getElementById("toDate").value;
+      if (!fromStr || !toStr) { setStatus("Select from & to dates", false); return; }
+
+      const { timeMin, timeMax } = isoSpan(fromStr, toStr);
+      const url = new URL("https://www.googleapis.com/calendar/v3/calendars/" + encodeURIComponent(calId) + "/events");
+      url.searchParams.set("singleEvents", "true");
+      url.searchParams.set("orderBy", "startTime");
+      url.searchParams.set("timeMin", timeMin);
+      url.searchParams.set("timeMax", timeMax);
+      url.searchParams.set("maxResults", "2500");
+
+      const res = await fetch(url.toString(), {
+        headers: { "Authorization": "Bearer " + accessToken }
+      });
+      if (!res.ok) {
+        setStatus("Calendar API error " + res.status, false);
+        return;
+      }
+      const data = await res.json();
+      currentEvents = data.items || [];
+      const sel = document.getElementById("eventSelect");
+      sel.innerHTML = '<option value="">— Select event —</option>';
+      currentEvents.forEach((ev, idx) => {
+        const title = ev.summary || "(no title)";
+        let dateStr = "";
+        if (ev.start) {
+          if (ev.start.date) dateStr = ev.start.date;
+          else if (ev.start.dateTime) dateStr = ev.start.dateTime.slice(0,10);
+        }
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = (dateStr ? (dateStr + " – ") : "") + title;
+        sel.appendChild(opt);
+      });
+      setStatus("Loaded " + currentEvents.length + " events", true);
+
+      // Try to derive employee from calendarId
+      deriveEmployeeFromCalendarId(calId);
+    }
+
+    function deriveEmployeeFromCalendarId(calId) {
+      const employeeInput = document.getElementById("employee");
+      if (!calId || employeeInput.value) return;
+      if (!calId.includes("@")) return;
+      const local = calId.split("@")[0];
+      const parts = local.split(".");
+      if (parts.length >= 2) {
+        const name = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+        employeeInput.value = name;
+      }
+    }
+
+    // --- Event → form mapping / helpers ---
+    function detectJobTypeFromText(title, desc) {
+      const text = (title + " " + desc).toLowerCase();
+      if (text.includes("tco") || text.includes("technical call out")) return "TCO";
+      if (text.includes("rtf") || text.includes("return to fix")) return "RTF";
+      if (text.includes("recce") || text.includes("site visit") || text.includes("survey")) return "Recce";
+      if (text.includes("install") || text.includes("installation") || text.includes("job/installation")) return "Job / Installation";
+      if (text.includes("meeting") || text.includes("consultation") || text.includes("consult")) return "Meeting / Consultation";
+      return "";
+    }
+
+    function extractPrimaryDate(ev) {
+      if (!ev || !ev.start) return "";
+      if (ev.start.date) return ev.start.date;
+      if (ev.start.dateTime) return ev.start.dateTime.slice(0,10);
+      return "";
+    }
+
+    function basicJobDescription(summary, description) {
+      // Very rough: prefer summary as first line, then a few non-dated lines from description
+      let lines = [];
+      if (summary) lines.push(summary.trim());
+      if (description) {
+        const descLines = description.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        const useful = descLines.filter(l => !/^\d{4}-\d{2}-\d{2}/.test(l) && !/^\d{2}\/\d{2}\/\d{4}/.test(l));
+        lines = lines.concat(useful.slice(0, 5));
+      }
+      return lines.join("\n");
+    }
+
+    function extractTechCheck(description) {
+      if (!description) return { summary: "", links: [] };
+      const lines = description.split(/\r?\n/);
+      const techLines = [];
+      const links = [];
+      for (const line of lines) {
+        const lower = line.toLowerCase();
+        if (lower.includes("tech check") || lower.includes("techcheck")) {
+          techLines.push(line.trim());
+        }
+        const urlMatch = line.match(/https?:\/\/\S+/g);
+        if (urlMatch) {
+          urlMatch.forEach(u => {
+            if (u.toLowerCase().includes("tech") || u.toLowerCase().includes("check")) {
+              links.push(u);
+            }
+          });
+        }
+      }
+      return { summary: techLines.join("\n"), links };
+    }
+
+    function extractContacts(description) {
+      if (!description) return { persons:"", phone:"", email:"" };
+      const lines = description.split(/\r?\n/);
+      const persons = [];
+      for (const line of lines) {
+        const lower = line.toLowerCase();
+        if (lower.includes("contact:") || lower.includes("contact -") ||
+            lower.includes("on-site contact") || lower.includes("onsite contact") ||
+            lower.startsWith("meet ") || lower.startsWith("meeting with")) {
+          const cleaned = line.replace(/.*:/, "").trim();
+          if (cleaned) persons.push(cleaned);
+        }
+      }
+      const emailMatch = description.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+      const phoneMatch = description.match(/\b(?:0\d{9,10}|\+?\d[\d\s\-]{7,}\d)\b/);
+      return {
+        persons: persons.join(", "),
+        phone: phoneMatch ? phoneMatch[0] : "",
+        email: emailMatch ? emailMatch[0] : ""
+      };
+    }
+
+    function onUseSelectedEvent() {
+      const sel = document.getElementById("eventSelect");
+      if (!sel.value) {
+        alert("Select an event first.");
+        return;
+      }
+      const ev = currentEvents[Number(sel.value)];
+      if (!ev) return;
+
+      const title = ev.summary || "";
+      const desc  = ev.description || "";
+      const loc   = ev.location || "";
+
+      // Job type
+      const jt = detectJobTypeFromText(title, desc);
+      const jobTypeSel = document.getElementById("jobType");
+      if (jt) jobTypeSel.value = jt; else jobTypeSel.value = "";
+      updateTimeOnSiteVisibility();
+
+      // Date
+      const dateStr = extractPrimaryDate(ev);
+      if (dateStr) document.getElementById("jobDate").value = dateStr;
+
+      // Address
+      if (loc && !document.getElementById("jobAddress").value) {
+        document.getElementById("jobAddress").value = loc;
+      }
+
+      // Job description
+      document.getElementById("jobDescription").value = basicJobDescription(title, desc);
+
+      // Tech check
+      const tech = extractTechCheck(desc);
+      document.getElementById("techCheck").value = tech.summary || "";
+      const techLinksDiv = document.getElementById("techLinks");
+      if (tech.links.length) {
+        techLinksDiv.innerHTML = "Tech check links: " + tech.links.map(u =>
+          '<a href="' + u + '" target="_blank" rel="noopener">' + u + "</a>"
+        ).join(" · ");
+      } else {
+        techLinksDiv.textContent = "";
+      }
+
+      // Contacts
+      const contacts = extractContacts(desc);
+      if (contacts.persons && !document.getElementById("personsMet").value) {
+        document.getElementById("personsMet").value = contacts.persons;
+      }
+      if (contacts.phone && !document.getElementById("contactPhone").value) {
+        document.getElementById("contactPhone").value = contacts.phone;
+      }
+      if (contacts.email && !document.getElementById("contactEmail").value) {
+        document.getElementById("contactEmail").value = contacts.email;
+      }
+    }
+
+    // --- Time on site ---
+    function timeToMinutes(t) {
+      if (!t) return null;
+      const parts = t.split(":");
+      if (parts.length !== 2) return null;
+      const h = Number(parts[0]), m = Number(parts[1]);
+      if (isNaN(h) || isNaN(m)) return null;
+      return h * 60 + m;
+    }
+    function minutesToHm(mins) {
+      if (mins == null || isNaN(mins)) return "";
+      const h = Math.floor(mins / 60);
+      const m = Math.round(mins % 60);
+      return h + "h " + String(m).padStart(2,"0") + "m";
+    }
+    function updateTimeOnSiteVisibility() {
+      const jt = document.getElementById("jobType").value;
+      const block = document.getElementById("timeOnSiteBlock");
+      if (jt === "TCO" || jt === "RTF") {
+        block.style.display = "block";
+      } else {
+        block.style.display = "none";
+      }
+    }
+    function recalcTimeOnSite() {
+      const start = timeToMinutes(document.getElementById("timeArrived").value);
+      const end   = timeToMinutes(document.getElementById("timeLeft").value);
+      let dur = "";
+      if (start != null && end != null) {
+        let diff = end - start;
+        if (diff < 0) diff += 24*60; // handle times across midnight
+        dur = minutesToHm(diff);
+      }
+      document.getElementById("timeDuration").value = dur;
+    }
+
+    // --- Media list ---
+    function updateMediaList() {
+      const input = document.getElementById("mediaFiles");
+      const listDiv = document.getElementById("mediaList");
+      if (!input.files || !input.files.length) {
+        listDiv.textContent = "No media selected.";
+        return;
+      }
+      const names = [];
+      for (const f of input.files) {
+        names.push(f.name + " (" + Math.round(f.size/1024) + " KB)");
+      }
+      listDiv.innerHTML = "Attached (" + input.files.length + "):<br>" +
+        names.map(n => "• " + n).join("<br>");
+    }
+
+    // --- Text "fluffing" for How Left / Advisories ---
+    function expandNotes(raw) {
+      if (!raw) return "";
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (!lines.length) return "";
+      const sentences = lines.map(line => {
+        let s = line;
+        if (!/[.!?]$/.test(s)) s += ".";
+        s = s.charAt(0).toUpperCase() + s.slice(1);
+        return s;
+      });
+      return sentences.join(" ");
+    }
+
+    // --- Report building ---
+    function buildReportHtml() {
+      const employee = document.getElementById("employee").value.trim();
+      const jobType  = document.getElementById("jobType").value;
+      const jobDate  = document.getElementById("jobDate").value;
+      const jobAddr  = document.getElementById("jobAddress").value.trim();
+      const jobDesc  = document.getElementById("jobDescription").value.trim();
+      const tech     = document.getElementById("techCheck").value.trim();
+      const persons  = document.getElementById("personsMet").value.trim();
+      const cPhone   = document.getElementById("contactPhone").value.trim();
+      const cEmail   = document.getElementById("contactEmail").value.trim();
+      const cAddr    = document.getElementById("contactAddress").value.trim();
+      const dur      = document.getElementById("timeDuration").value.trim();
+      const findings = document.getElementById("findings").value.trim();
+      const howRaw   = document.getElementById("howLeft").value.trim();
+      const advRaw   = document.getElementById("advisories").value.trim();
+      const howFull  = expandNotes(howRaw);
+      const advFull  = expandNotes(advRaw);
+
+      const mediaInput = document.getElementById("mediaFiles");
+      const mediaItems = [];
+      if (mediaInput.files) {
+        for (const f of mediaInput.files) mediaItems.push(f.name);
+      }
+
+      const parts = [];
+      parts.push("<h3>Header</h3>");
+      parts.push("<p><b>Employee:</b> " + (employee || "–") +
+                 "<br><b>Job type:</b> " + (jobType || "–") +
+                 "<br><b>Date:</b> " + (jobDate || "–") + "</p>");
+
+      parts.push("<h3>Site & description</h3>");
+      parts.push("<p><b>Address/site:</b> " + (jobAddr || "–") + "</p>");
+      parts.push("<p><b>Job description:</b><br>" + (jobDesc ? jobDesc.replace(/\n/g,"<br>") : "–") + "</p>");
+
+      parts.push("<h3>Tech check summary</h3>");
+      parts.push("<p>" + (tech ? tech.replace(/\n/g,"<br>") : "–") + "</p>");
+
+      parts.push("<h3>Person(s) met & contacts</h3>");
+      let personHtml = "<p><b>Person(s) met:</b> " + (persons || "–") + "</p>";
+      const contactBits = [];
+      if (cPhone) contactBits.push("Phone: " + cPhone);
+      if (cEmail) contactBits.push("Email: " + cEmail);
+      if (cAddr)  contactBits.push("Postal address: " + cAddr.replace(/\n/g,"; "));
+      if (contactBits.length) {
+        personHtml += "<p>" + contactBits.join("<br>") + "</p>";
+      }
+      parts.push(personHtml);
+
+      if (jobType === "TCO" || jobType === "RTF") {
+        const arr = document.getElementById("timeArrived").value;
+        const left = document.getElementById("timeLeft").value;
+        parts.push("<h3>Time on site</h3>");
+        parts.push("<p><b>Arrived:</b> " + (arr || "–") +
+                   "<br><b>Left:</b> " + (left || "–") +
+                   "<br><b>Duration:</b> " + (dur || "–") + "</p>");
+      }
+
+      parts.push("<h3>Findings</h3>");
+      parts.push("<p>" + (findings ? findings.replace(/\n/g,"<br>") : "–") + "</p>");
+
+      parts.push("<h3>How things have been left</h3>");
+      parts.push("<p>" + (howFull || "–") + "</p>");
+
+      parts.push("<h3>Advisories</h3>");
+      parts.push("<p>" + (advFull || "–") + "</p>");
+
+      parts.push("<h3>Photos / videos</h3>");
+      if (mediaItems.length) {
+        parts.push("<ul>" + mediaItems.map(n => "<li>" + n + "</li>").join("") + "</ul>");
+      } else {
+        parts.push("<p>None listed.</p>");
+      }
+
+      return parts.join("");
+    }
+
+    function buildReportText() {
+      const employee = document.getElementById("employee").value.trim();
+      const jobType  = document.getElementById("jobType").value;
+      const jobDate  = document.getElementById("jobDate").value;
+      const jobAddr  = document.getElementById("jobAddress").value.trim();
+      const jobDesc  = document.getElementById("jobDescription").value.trim();
+      const tech     = document.getElementById("techCheck").value.trim();
+      const persons  = document.getElementById("personsMet").value.trim();
+      const cPhone   = document.getElementById("contactPhone").value.trim();
+      const cEmail   = document.getElementById("contactEmail").value.trim();
+      const cAddr    = document.getElementById("contactAddress").value.trim();
+      const dur      = document.getElementById("timeDuration").value.trim();
+      const findings = document.getElementById("findings").value.trim();
+      const howFull  = expandNotes(document.getElementById("howLeft").value.trim());
+      const advFull  = expandNotes(document.getElementById("advisories").value.trim());
+
+      const mediaInput = document.getElementById("mediaFiles");
+      const mediaItems = [];
+      if (mediaInput.files) {
+        for (const f of mediaInput.files) mediaItems.push(f.name);
+      }
+
+      const lines = [];
+      lines.push("Job Report");
+      lines.push("==========");
+      lines.push("");
+      lines.push("Employee: " + (employee || "-"));
+      lines.push("Job type: " + (jobType || "-"));
+      lines.push("Date: " + (jobDate || "-"));
+      lines.push("");
+      lines.push("Site & description");
+      lines.push("------------------");
+      lines.push("Address/site: " + (jobAddr || "-"));
+      lines.push("Job description:");
+      lines.push(jobDesc || "-");
+      lines.push("");
+      lines.push("Tech check summary");
+      lines.push("------------------");
+      lines.push(tech || "-");
+      lines.push("");
+      lines.push("Person(s) met & contacts");
+      lines.push("------------------------");
+      lines.push("Person(s) met: " + (persons || "-"));
+      if (cPhone) lines.push("Phone: " + cPhone);
+      if (cEmail) lines.push("Email: " + cEmail);
+      if (cAddr)  lines.push("Postal address: " + cAddr.replace(/\r?\n/g, "; "));
+      lines.push("");
+
+      if (jobType === "TCO" || jobType === "RTF") {
+        const arr = document.getElementById("timeArrived").value;
+        const left = document.getElementById("timeLeft").value;
+        lines.push("Time on site");
+        lines.push("------------");
+        lines.push("Arrived: " + (arr || "-"));
+        lines.push("Left: " + (left || "-"));
+        lines.push("Duration: " + (dur || "-"));
+        lines.push("");
+      }
+
+      lines.push("Findings");
+      lines.push("--------");
+      lines.push(findings || "-");
+      lines.push("");
+      lines.push("How things have been left");
+      lines.push("-------------------------");
+      lines.push(howFull || "-");
+      lines.push("");
+      lines.push("Advisories");
+      lines.push("----------");
+      lines.push(advFull || "-");
+      lines.push("");
+
+      lines.push("Photos / videos");
+      lines.push("---------------");
+      if (mediaItems.length) {
+        mediaItems.forEach(n => lines.push("• " + n));
+      } else {
+        lines.push("None listed.");
+      }
+
+      return lines.join("\n");
+    }
+
+    function generateReport() {
+      const html = buildReportHtml();
+      const text = buildReportText();
+      lastReportText = text;
+      document.getElementById("reportPreview").innerHTML = html;
+      document.getElementById("reportPreview").scrollTop = 0;
+    }
+
+    function viewReport() {
+      if (!lastReportText) generateReport();
+      document.getElementById("reportPreview").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function copyReportText() {
+      if (!lastReportText) {
+        generateReport();
+      }
+      try {
+        await navigator.clipboard.writeText(lastReportText);
+        alert("Report text copied to clipboard.");
+      } catch (e) {
+        alert("Could not copy automatically. You may need to select and copy from the preview.");
+      }
+    }
+
+    function sendReportEmail() {
+      if (!lastReportText) generateReport();
+      const jobType  = document.getElementById("jobType").value || "Job";
+      const jobDate  = document.getElementById("jobDate").value || "";
+      const jobAddr  = document.getElementById("jobAddress").value.trim();
+      const subject  = "Job Report – " + jobType + (jobDate ? (" – " + jobDate) : "") +
+                       (jobAddr ? (" – " + jobAddr) : "");
+      const to = [
+        "Neil.Lovell@audiovisualdirectuk.co.uk",
+        "Mark.Thyer@audiovisualdirectuk.co.uk",
+        "David.Rolt@audiovisualdirectuk.co.uk"
+      ].join(",");
+
+      const body = encodeURIComponent(lastReportText + "\n\n(Photos/videos not attached automatically – please attach the relevant files listed above.)");
+      const mailto = "mailto:" + encodeURIComponent(to) +
+                     "?subject=" + encodeURIComponent(subject) +
+                     "&body=" + body;
+      window.location.href = mailto;
+    }
+
+    // --- Init ---
+    window.addEventListener("DOMContentLoaded", () => {
+      // Default date range: last 14 days
+      const now = new Date();
+      const fmt = d => d.toISOString().slice(0,10);
+      const end = new Date(now);
+      const start = new Date(now);
+      start.setDate(start.getDate() - 14);
+      document.getElementById("fromDate").value = fmt(start);
+      document.getElementById("toDate").value   = fmt(end);
+
+      // Auth
+      document.getElementById("signinBtn").addEventListener("click", signIn);
+      document.getElementById("loadEventsBtn").addEventListener("click", loadEvents);
+      document.getElementById("useEventBtn").addEventListener("click", onUseSelectedEvent);
+
+      // Job type / time on site
+      document.getElementById("jobType").addEventListener("change", updateTimeOnSiteVisibility);
+      document.getElementById("timeArrived").addEventListener("change", recalcTimeOnSite);
+      document.getElementById("timeLeft").addEventListener("change", recalcTimeOnSite);
+
+      // Media list
+      document.getElementById("mediaFiles").addEventListener("change", updateMediaList);
+
+      // Report buttons
+      document.getElementById("generateBtn").addEventListener("click", generateReport);
+      document.getElementById("viewBtn").addEventListener("click", viewReport);
+      document.getElementById("copyBtn").addEventListener("click", copyReportText);
+      document.getElementById("sendBtn").addEventListener("click", sendReportEmail);
+
+      // Initialize auth client when gsi script ready
+      window.addEventListener("load", () => {
+        try { initAuth(); } catch (e) {}
+      });
+    });
+  </script>
+</body>
+</html>
