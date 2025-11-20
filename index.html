@@ -3,75 +3,231 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Frazer's AVD TOOLS</title>
+  <title>Frazer's AVD Tools</title>
   <meta name="color-scheme" content="light dark" />
   <style>
-    :root{--bg:#0f172a;--card:#0b1220;--text:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;--border:#1f2937}
-    @media (prefers-color-scheme: light){
-      :root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#475569;--accent:#0ea5e9;--border:#e5e7eb}
+    :root {
+      --bg:#0f172a; --card:#020617; --panel:#020617; --border:#1e293b;
+      --text:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8; --accent-soft:rgba(56,189,248,0.12);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:radial-gradient(1200px 800px at 10% 10%,rgba(56,189,248,.08),transparent 40%),
-                 radial-gradient(1000px 700px at 90% 20%,rgba(99,102,241,.08),transparent 45%),var(--bg);
-      color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px;
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg:#f8fafc; --card:#ffffff; --panel:#ffffff; --border:#e5e7eb;
+        --text:#020617; --muted:#475569; --accent:#0ea5e9; --accent-soft:rgba(14,165,233,0.10);
+      }
     }
-    .shell{width:100%;max-width:960px;background:color-mix(in oklab,var(--card) 94%,transparent);
-      border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    h1{margin:0;font-size:28px;letter-spacing:.2px}
-    .subtitle{color:var(--muted);margin:6px 0 0}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:20px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
-    .card h3{margin:0;font-size:18px}
-    .card p{margin:0;color:var(--muted);font-size:14px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:12px 14px;border-radius:12px;border:1px solid color-mix(in oklab,var(--accent) 60%,var(--border));
-      color:var(--text);background:linear-gradient(180deg,color-mix(in oklab,var(--accent) 30%,transparent),transparent);
-      text-decoration:none;font-weight:600;transition:transform .06s ease,background .2s ease}
-    .btn:hover{transform:translateY(-1px)}
-    .btn.secondary{background:transparent}
-    .pill{display:inline-block;padding:2px 10px;font-size:12px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
-    footer{margin-top:22px;color:var(--muted);font-size:12px;text-align:center}
-    code{background:rgba(148,163,184,.15);padding:.15em .35em;border-radius:6px}
+    * { box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px 600px at 5% 0%, rgba(56,189,248,0.10), transparent 55%),
+        radial-gradient(800px 600px at 95% 0%, rgba(129,140,248,0.12), transparent 50%),
+        var(--bg);
+      color:var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin:0 auto;
+      padding:24px 16px 32px;
+    }
+    .header-card {
+      background:var(--card);
+      border-radius:20px;
+      border:1px solid var(--border);
+      padding:18px 18px 20px;
+      box-shadow:0 18px 40px rgba(15,23,42,0.4);
+      margin-bottom:18px;
+    }
+    h1 {
+      margin:0 0 4px;
+      font-size:26px;
+      letter-spacing:.02em;
+    }
+    .muted { color:var(--muted); font-size:14px; }
+    .pill {
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:11px;padding:3px 9px;border-radius:999px;
+      border:1px solid var(--border);color:var(--muted);
+    }
+    .tools-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:14px;
+    }
+    .tool-card {
+      background:var(--card);
+      border-radius:18px;
+      border:1px solid var(--border);
+      padding:14px 14px 16px;
+      box-shadow:0 12px 28px rgba(15,23,42,0.35);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:160px;
+    }
+    .tool-title {
+      font-size:17px;
+      font-weight:600;
+      margin:0 0 4px;
+    }
+    .tool-sub {
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .tool-desc {
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .btn-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:6px;
+    }
+    a.btn {
+      text-decoration:none;
+      border-radius:999px;
+      border:1px solid var(--border);
+      padding:7px 12px;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--panel);
+      color:var(--text);
+      cursor:pointer;
+      transition:transform .06s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    }
+    a.btn.primary {
+      border-color:var(--accent);
+      background:linear-gradient(180deg,var(--accent-soft),transparent);
+    }
+    a.btn:hover {
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(15,23,42,0.5);
+    }
+    .footer-note {
+      margin-top:14px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:right;
+    }
+    code {
+      background:rgba(15,23,42,0.6);
+      border-radius:6px;
+      padding:2px 4px;
+      font-size:11px;
+    }
+    @media (prefers-color-scheme: light) {
+      code {
+        background:#f1f5f9;
+      }
+    }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <header>
-      <div>
-        <h1>Frazer's AVD TOOLS</h1>
-        <p class="subtitle">Quick links to your internal calculators & utilities.</p>
-      </div>
-      <span class="pill">GitHub Pages</span>
-    </header>
-
-    <section class="grid">
-      <article class="card">
-        <h3>Overtime Calculator</h3>
-        <p>Daily time calc with Google Calendar event picker, log, and export to Word/PDF.</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:2px">
-          <!-- Project Pages link (keeps your current OAuth/Calendar setup intact) -->
-          <a class="btn" href="/Overtime-Calculator/" target="_self" rel="noopener">Open</a>
-          <a class="btn secondary" href="/Overtime-Calculator/" target="_blank" rel="noopener">Open in new tab</a>
-          <a class="btn" href="/Job-Report-Generator/" target="_self" rel="noopener">Open</a>
+  <div class="wrap">
+    <div class="header-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+        <div>
+          <h1>Frazer's AVD Tools</h1>
+          <div class="muted">
+            Quick-launch hub for all the internal AVD tools you’re building.
+          </div>
         </div>
-      </article>
+        <span class="pill">frazerboorman.github.io</span>
+      </div>
+    </div>
 
-      <!-- Placeholder for future tools -->
-      <article class="card">
-        <h3>Coming soon</h3>
-        <p>Slot for your next tool (quote helper, hire kit checker, etc.).</p>
-        <div><a class="btn secondary" href="#" onclick="alert('Not added yet');return false;">Preview</a></div>
-      </article>
-    </section>
+    <div class="tools-grid">
 
-    <footer>
-      Add more projects by creating new repos and enabling Pages → they’ll appear at
-      <code>https://frazerboorman.github.io/&lt;repo-name&gt;/</code>.
-    </footer>
-  </main>
+      <!-- TOOL 1 – Overtime Calculator -->
+      <div class="tool-card">
+        <div>
+          <div class="tool-sub">Time &amp; pay</div>
+          <h2 class="tool-title">Overtime Calculator</h2>
+          <div class="tool-desc">
+            Calculates working hours, overtime, logs entries, and exports reports. Google Calendar integrated.
+          </div>
+        </div>
+        <div class="btn-row">
+          <a class="btn primary" href="https://frazerboorman.github.io/Overtime-Calculator/" target="_blank" rel="noopener">
+            Open tool
+          </a>
+          <a class="btn" href="https://github.com/frazerboorman/Overtime-Calculator" target="_blank" rel="noopener">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- TOOL 2 – Job Report Generator -->
+      <div class="tool-card">
+        <div>
+          <div class="tool-sub">Job reporting</div>
+          <h2 class="tool-title">Job Report Generator</h2>
+          <div class="tool-desc">
+            Pulls job data from Google Calendar and generates polished, AI-enhanced Word reports.
+          </div>
+        </div>
+        <div class="btn-row">
+          <a class="btn primary" href="https://frazerboorman.github.io/Job-Report-Generator/" target="_blank" rel="noopener">
+            Open tool
+          </a>
+          <a class="btn" href="https://github.com/frazerboorman/Job-Report-Generator" target="_blank" rel="noopener">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- TOOL 3 – Job Description Simplifier -->
+      <div class="tool-card">
+        <div>
+          <div class="tool-sub">Pre-job prep</div>
+          <h2 class="tool-title">Job Description Simplifier</h2>
+          <div class="tool-desc">
+            Paste all job details and get a simplified brief, Tech Check summary, key points, and a missed-info check.
+          </div>
+        </div>
+        <div class="btn-row">
+          <a class="btn primary" href="https://frazerboorman.github.io/Job-Description-Simplifier/" target="_blank" rel="noopener">
+            Open tool
+          </a>
+          <a class="btn" href="https://github.com/frazerboorman/Job-Description-Simplifier" target="_blank" rel="noopener">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- TOOL 4 – Consultation Meeting Processor -->
+      <div class="tool-card">
+        <div>
+          <div class="tool-sub">Consultations</div>
+          <h2 class="tool-title">Consultation Meeting Processor</h2>
+          <div class="tool-desc">
+            Processes consultation meeting notes into structured summaries, next steps, risks, and client expectations.
+          </div>
+        </div>
+        <div class="btn-row">
+          <a class="btn primary" href="https://frazerboorman.github.io/Consultation-Meeting-Processor/" target="_blank" rel="noopener">
+            Open tool
+          </a>
+          <a class="btn" href="https://github.com/frazerboorman/Consultation-Meeting-Processor" target="_blank" rel="noopener">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-note">
+      Want a new tool added? Just tell me the repo name and I’ll regenerate the index with the new card.
+    </div>
+  </div>
 </body>
 </html>
