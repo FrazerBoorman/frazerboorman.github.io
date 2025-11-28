@@ -51,6 +51,16 @@
       font-size:11px;padding:3px 9px;border-radius:999px;
       border:1px solid var(--border);color:var(--muted);
     }
+    .section-block {
+      margin-bottom:18px;
+    }
+    .section-title {
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      color:var(--muted);
+      margin:4px 2px 8px;
+    }
     .tools-grid {
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -145,179 +155,207 @@
       </div>
     </div>
 
-    <div class="tools-grid">
+    <!-- SECTION: Time & Pay -->
+    <div class="section-block">
+      <div class="section-title">Time &amp; Pay</div>
+      <div class="tools-grid">
 
-      <!-- TOOL 1 – Overtime Calculator -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Time &amp; pay</div>
-          <h2 class="tool-title">Overtime Calculator</h2>
-          <div class="tool-desc">
-            Calculates working hours, overtime, logs entries, and exports reports. Google Calendar integrated.
+        <!-- TOOL – Overtime Calculator -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Time &amp; pay · v4.1</div>
+            <h2 class="tool-title">Overtime Calculator</h2>
+            <div class="tool-desc">
+              Calculates working hours, overtime, logs entries, and exports reports. Google Calendar integrated.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/Overtime-Calculator/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/frazerboorman/Overtime-Calculator" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/Overtime-Calculator/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/frazerboorman/Overtime-Calculator" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 2 – Job Report Generator -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Job reporting</div>
-          <h2 class="tool-title">Job Report Generator</h2>
-          <div class="tool-desc">
-            Pulls job data from Google Calendar and generates polished, AI-enhanced Word reports.
+        <!-- TOOL – Automated Overtime Calculator -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Time &amp; pay (auto)</div>
+            <h2 class="tool-title">Automated Overtime Calculator</h2>
+            <div class="tool-desc">
+              Automated timelogging based on iPhone geofence data, designed to capture work time with minimal manual input.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/Automated-Overtime-Calculator-/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/FrazerBoorman/Automated-Overtime-Calculator-" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/Job-Report-Generator/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/frazerboorman/Job-Report-Generator" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 3 – Job Description Simplifier -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Pre-job prep</div>
-          <h2 class="tool-title">Job Description Simplifier</h2>
-          <div class="tool-desc">
-            Paste all job details and get a simplified brief, Tech Check summary, key points, and a missed-info check.
+        <!-- TOOL – ChatGPT Hours Calculator -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Usage tracking</div>
+            <h2 class="tool-title">ChatGPT Hours Calculator</h2>
+            <div class="tool-desc">
+              Hours spent on ChatGPT, tokens used and approximate API cost based on your exported conversations.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/chatgpt-hours-calculator/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/FrazerBoorman/chatgpt-hours-calculator" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/Job-Description-Simplifier/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/frazerboorman/Job-Description-Simplifier" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 4 – Consultation Meeting Processor -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Consultations</div>
-          <h2 class="tool-title">Consultation Meeting Processor</h2>
-          <div class="tool-desc">
-            Processes consultation meeting notes into structured summaries, next steps, risks, and client expectations.
+      </div>
+    </div>
+
+    <!-- SECTION: Job Docs -->
+    <div class="section-block">
+      <div class="section-title">Job Docs</div>
+      <div class="tools-grid">
+
+        <!-- TOOL – Job Report Generator -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Job reporting · v0.9</div>
+            <h2 class="tool-title">Job Report Generator</h2>
+            <div class="tool-desc">
+              Pulls job data from Google Calendar and generates polished, AI-enhanced Word reports.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/Job-Report-Generator/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/frazerboorman/Job-Report-Generator" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/Consultation-Meeting-Processor/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/frazerboorman/Consultation-Meeting-Processor" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 5 – ChatGPT Hours Calculator -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Consultations</div>
-          <h2 class="tool-title">ChatGPT Hours Calculator</h2>
-          <div class="tool-desc">
-            Hours spent on ChatGPT, Tokens Spent and cost per request calculator.
+        <!-- TOOL – Job Description Simplifier -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Pre-job prep · v0.1</div>
+            <h2 class="tool-title">Job Description Simplifier</h2>
+            <div class="tool-desc">
+              Paste all job details and get a simplified brief, Tech Check summary, key points, and a missed-info check.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/Job-Description-Simplifier/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/frazerboorman/Job-Description-Simplifier" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/chatgpt-hours-calculator/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/FrazerBoorman/chatgpt-hours-calculator" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 6 – Replacement Website -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Website</div>
-          <h2 class="tool-title">Replacement Website Mockup</h2>
-          <div class="tool-desc">
-            Mock up of modernised website
+        <!-- TOOL – Consultation Meeting Processor -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Consultations · v0.5</div>
+            <h2 class="tool-title">Consultation Meeting Processor</h2>
+            <div class="tool-desc">
+              Processes consultation meeting notes into structured summaries, next steps, risks, and client expectations.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/Consultation-Meeting-Processor/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/FrazerBoorman/Consultation-Meeting-Processor" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/AudioVisualDirectUkLtd/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/FrazerBoorman/AudioVisualDirectUkLtd" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 7 – Landing Page -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Landing Page</div>
-          <h2 class="tool-title">AVD Tools Landing Page</h2>
-          <div class="tool-desc">
-            Landing page for all AVD Tools.
+      </div>
+    </div>
+
+    <!-- SECTION: Websites -->
+    <div class="section-block">
+      <div class="section-title">Websites</div>
+      <div class="tools-grid">
+
+        <!-- TOOL – Replacement Website -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Website</div>
+            <h2 class="tool-title">Replacement Website Mockup</h2>
+            <div class="tool-desc">
+              Modernised website mockup for Audio Visual Direct, with updated layout, copy and structure.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/AudioVisualDirectUkLtd/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/FrazerBoorman/AudioVisualDirectUkLtd" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io//" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/FrazerBoorman/frazerboorman.github.io" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 8 – Automated Overtime Calculator -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Time &amp; pay (auto)</div>
-          <h2 class="tool-title">Automated Overtime Calculator</h2>
-          <div class="tool-desc">
-            Automated timelogging based on iPhone geofence data, designed to capture work time with minimal manual input.
+        <!-- TOOL – Landing Page -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Landing page</div>
+            <h2 class="tool-title">AVD Tools Landing Page</h2>
+            <div class="tool-desc">
+              Landing page for all AVD tools hosted on frazerboorman.github.io.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io//" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/FrazerBoorman/frazerboorman.github.io" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/Automated-Overtime-Calculator-/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/FrazerBoorman/Automated-Overtime-Calculator-" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
-      <!-- TOOL 9 – AVD Tool Template -->
-      <div class="tool-card">
-        <div>
-          <div class="tool-sub">Template</div>
-          <h2 class="tool-title">AVD Tool Template</h2>
-          <div class="tool-desc">
-            Base template for new AVD tools, with your standard layout, styling, and wiring ready to customise.
+      </div>
+    </div>
+
+    <!-- SECTION: Templates -->
+    <div class="section-block">
+      <div class="section-title">Templates</div>
+      <div class="tools-grid">
+
+        <!-- TOOL – AVD Tool Template -->
+        <div class="tool-card">
+          <div>
+            <div class="tool-sub">Template</div>
+            <h2 class="tool-title">AVD Tool Template</h2>
+            <div class="tool-desc">
+              Base template for new AVD tools, with your standard layout, styling, and wiring ready to customise.
+            </div>
+          </div>
+          <div class="btn-row">
+            <a class="btn primary" href="https://frazerboorman.github.io/AVD-TOOL-Template/" target="_blank" rel="noopener">
+              Open tool
+            </a>
+            <a class="btn" href="https://github.com/FrazerBoorman/AVD-TOOL-Template" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
           </div>
         </div>
-        <div class="btn-row">
-          <a class="btn primary" href="https://frazerboorman.github.io/AVD-TOOL-Template/" target="_blank" rel="noopener">
-            Open tool
-          </a>
-          <a class="btn" href="https://github.com/FrazerBoorman/AVD-TOOL-Template" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
-        </div>
-      </div>
 
+      </div>
     </div>
 
     <div class="footer-note">
